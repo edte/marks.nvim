@@ -1,7 +1,7 @@
 # marks.nvim
 show mark on sign bar
 
-![marks](https://github.com/user-attachments/assets/44ee1ad1-b2e4-4093-aec2-3c65f213d277)
+![marks](https://github.com/user-attachments/assets/dc41210c-93f4-4688-9733-ee967c52cce4)
 
 ## 📦 Installation
 
@@ -24,7 +24,7 @@ show mark on sign bar
 
 
 ## 🚀 Usage
-`ma` to mark a position, `md` to delete line mark
+`m + lower case letters` to mark a position, `md` to delete line mark
 
 ## 📄 Thanks
 - [marks.nvim](https://github.com/chentoast/marks.nvim)
