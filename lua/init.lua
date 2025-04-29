@@ -249,9 +249,9 @@ function Mark.setup(opts)
 		end
 	end
 
-	vim.keymap.set("n", "md", function()
-		Mark:delete_line_marks()
-	end, { desc = "esc", silent = true })
+	-- vim.keymap.set("n", "md", function()
+	-- 	Mark:delete_line_marks()
+	-- end, { desc = "esc", silent = true })
 
 	local augroup = vim.api.nvim_create_augroup("Marks_autocmds", { clear = true })
 
