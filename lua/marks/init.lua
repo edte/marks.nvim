@@ -170,7 +170,9 @@ function Mark:refresh(force)
 		pos = data.pos
 		cached_mark = Mark.buffers[bufnr].placed_marks[mark]
 
-		if Mark.is_upper(mark) and pos[1] == bufnr and (force or not cached_mark or pos[2] ~= cached_mark.line) then
+		if Mark.is_upper(mark) and Mark.is_missing_mark_file(data) then
+			cmd("delmark " .. mark)
+		elseif Mark.is_upper(mark) and pos[1] == bufnr and (force or not cached_mark or pos[2] ~= cached_mark.line) then
 			Mark:register_mark(mark, pos[2], pos[3], bufnr)
 		end
 	end
@@ -220,6 +222,18 @@ function Mark.is_lower(char)
 	return (97 <= char:byte() and char:byte() <= 122)
 end
 
+function Mark.get_global_mark(mark)
+	for _, data in ipairs(vim.fn.getmarklist()) do
+		if data.mark == "'" .. mark then
+			return data
+		end
+	end
+end
+
+function Mark.is_missing_mark_file(mark_data)
+	return mark_data and mark_data.file ~= "" and vim.fn.filereadable(mark_data.file) == 0
+end
+
 Mark.config = {}
 
 function Mark.setup(opts)
@@ -243,7 +257,16 @@ function Mark.setup(opts)
 	for i = 0, 25 do
 		if i ~= 3 and i ~= 12 and i ~= 14 then
 			vim.keymap.set("n", "'" .. low(i), function()
-				cmd("'" .. upp(i))
+				local mark = upp(i)
+				local mark_data = Mark.get_global_mark(mark)
+
+				if Mark.is_missing_mark_file(mark_data) then
+					cmd("delmark " .. mark)
+					vim.notify("mark " .. mark .. " points to a deleted file: " .. mark_data.file, vim.log.levels.WARN)
+					return
+				end
+
+				cmd("'" .. mark)
 				vim.api.nvim_feedkeys("zz", "n", false)
 			end)
 		end
